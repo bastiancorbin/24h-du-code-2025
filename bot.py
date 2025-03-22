@@ -10,10 +10,10 @@ from langchain_core.tools import tool, ToolException
 from langchain_core.messages import HumanMessage
 
 from api.client import get_clients, get_client_by_id, create_client, update_client, delete_client
-from api.meal import MealApi
-from api.reservation import ReservationApi
-from api.restaurant import RestaurantApi
-from api.spas import SpaApi
+from api.meal import get_meals
+from api.reservation import get_reservations, get_reservation_by_id, create_reservation, delete_reservation, update_reservation, update_reservation_with_patch
+from api.restaurant import get_restaurants
+from api.spas import get_spas
 
 
 load_dotenv()
@@ -25,11 +25,6 @@ model = init_chat_model("mistral-large-latest", model_provider="mistralai")
 
 # Tools
 
-meal = MealApi()
-reservation = ReservationApi()
-restaurant = RestaurantApi()
-spa = SpaApi()
-
 search = TavilySearchResults(max_results=2)
 tools = [
     search,
@@ -40,18 +35,18 @@ tools = [
     get_client_by_id,
     update_client,
 
-    meal.get_meals,
+    get_meals,
 
-    reservation.get_reservations,
-    reservation.get_reservation_by_id,
-    reservation.create_reservation,
-    reservation.delete_reservation,
-    reservation.update_reservation,
-    reservation.update_reservation_with_patch,
+    get_reservations,
+    get_reservation_by_id,
+    create_reservation,
+    delete_reservation,
+    update_reservation,
+    update_reservation_with_patch,
 
-    restaurant.get_restaurants,
+    get_restaurants,
 
-    spa.get_spas
+    get_spas
 ]
 
 # Config MemorySaver
