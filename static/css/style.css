@@ -1,13 +1,56 @@
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
+    --base-black: #000000;
+    --base-white: #FFFFFF;
+
+    background: url('../imgs/background.png') lightgray 50% / cover no-repeat;
 }
-h1 {
-    color: #3498db;
+
+canvas {
+    display: block;
 }
-a {
-    color: #2ecc71;
-    text-decoration: none;
-    font-weight: bold;
+
+.bg-black {
+    background-color: var(--base-black) !important;
+}
+
+.bg-white {
+    background-color: var(--base-white) !important;
+}
+
+.border-black {
+    border-color: var(--base-black) !important;
+}
+
+.border-white {
+    border-color: var(--base-white) !important;
+}
+
+.ico {
+    --icon-size: 20px;
+    --icon-color: var(--primary-color-80);
+
+    display: block;
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    mask-image: var(--icon-url);
+
+    background-color: var(--icon-color);
+}
+
+.ico-arrow-right {
+    --icon-color: var(--base-black);
+    --icon-url: url('../svg/arrow-right.svg');
+}
+
+.ico-microphone-speaking {
+    --icon-color: var(--base-white);
+    --icon-url: url('../svg/microphone-speaking.svg');
+}
+
+.ico-multi-bubble {
+    --icon-color: var(--base-white);
+    --icon-url: url('../svg/multi-bubble.svg');
 }
