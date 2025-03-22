@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
 from typing import List
+
+from langchain_core.tools import tool
 
 class Spa(BaseModel):
     id: int = Field(description="The spa's unique identifier")
@@ -13,22 +15,21 @@ class Spa(BaseModel):
     created_at: str = Field(description="The creation timestamp of the spa")
     updated_at: str = Field(description="The last update timestamp of the spa")
 
-class SpaApi:
-    def __init__(self):
-        self.api_client = ApiClient()
-        self.endpoint = "spas"
 
-    def get_spas(self) -> List[Spa]:
-        """
-        Fetches all spa details from the API.
+@tool
+def get_spas() -> List[Spa]:
+    """
+    Get all spa details.
 
-        Returns:
-            List[Spa]: A list of Pydantic model instances containing the details of spas.
-        """
-        try:
-            result = self.api_client.get(self.endpoint)
-            return [Spa(**spa) for spa in result]  # Convert each item in the list to a Spa instance
-        except Exception as e:
-            print(f"Error: {e}")
-            return []
+    Returns:
+        List[Spa]: A list of Pydantic model instances containing the details of spas.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "spas"
 
+        result = api_client.get(endpoint)
+        return [Spa(**spa) for spa in result]  # Convert each item in the list to a Spa instance
+    except Exception as e:
+        print(f"Error: {e}")
+        return []

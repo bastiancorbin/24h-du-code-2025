@@ -9,17 +9,19 @@
 <body>
     <h1>Bienvenue sur mon site Flask !</h1>
     <p>Ceci est la page d'accueil.</p>
+    <input type="text" id="name" placeholder="requete">
     <button id="call-receptionist">Appeler Receptionist</button>
     <p id="response"></p>
 
     <script>
         document.getElementById('call-receptionist').addEventListener('click', function() {
-            fetch('{{ url_for('chat_with_receptionist') }}')
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById('response').innerText = data;
-                })
-                .catch(error => console.error('Error:', error));
+            console.log(document.getElementById('name').value);
+            fetch(`{{ url_for('chat_with_receptionist') }}?message=${document.getElementById('name').value}`)
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('response').innerText = data;
+            })
+            .catch(error => console.error('Error:', error));
         });
     </script>
 </body>

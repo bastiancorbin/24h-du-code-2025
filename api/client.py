@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class ClientDetail(BaseModel):
     id: int = Field(description="The client's unique identifier")
@@ -14,102 +16,123 @@ class Client(BaseModel):
     previous: str | None = Field(description="The URL to the previous page")
     results: list[ClientDetail] = Field(description="The list of clients")
 
-class ClientApi:
-    def __init__(self):
-        self.api_client = ApiClient()
-        self.endpoint = "clients"
+@tool
+def get_clients(page_number, search) -> Client:
+    """
+    Search for clients.
 
-    def get_clients(self, page_number, search) -> Client:
-        """
-        Get all clients from the API.
+    Returns:
+        Client: A Pydantic model containing client details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "clients"
 
-        Returns:
-            Client: A Pydantic model containing client details.
-        """
-        try:
-            result = self.api_client.get(self.endpoint, params={ "page": page_number, "search": search })
-            return Client(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+        result = api_client.get(endpoint, params={ "page": page_number, "search": search })
+        return Client(**result)
+    except Exception as e:
+        print(f"Error: {e}")
 
-    def get_client_by_id(self, client_id: int) -> ClientDetail:
-        """
-        Get a client by ID from the API.
+@tool
+def get_client_by_id(client_id: int) -> ClientDetail:
+    """
+    Get a client by ID.
+    To get the Id you have to search the client first.
 
-        Args:
-            client_id (int): The unique identifier of the client.
+    Args:
+        client_id (int): The unique identifier of the client.
 
-        Returns:
-            ClientDetail: A Pydantic model containing client details.
-        """
-        try:
-            result = self.api_client.get(f"{self.endpoint}/{client_id}")
-            return ClientDetail(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+    Returns:
+        ClientDetail: A Pydantic model containing client details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "clients"
 
-    def create_client(self, name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
-        """
-        Create a new client in the API.
+        result = api_client.get(f"{endpoint}/{client_id}")
+        return ClientDetail(**result)
+    except Exception as e:
+        print(f"Error: {e}")
 
-        Args:
-            name (str): The client's name.
-            phone_number (str): The client's phone number.
-            room_number (str): The client's room number.
-            special_requests (str): Special requests made by the client.
+@tool
+def create_client(name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
+    """
+    Create a new client .
+    If the client don't give all informations, ask him to give it.
 
-        Returns:
-            ClientDetail: A Pydantic model containing the created client details.
-        """
-        try:
-            result = self.api_client.post(f"{self.endpoint}/", json=
-            {
-                "name": name,
-                "phone_number": phone_number,
-                "room_number": room_number,
-                "special_requests": special_requests
-            })
-            return ClientDetail(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+    Args:
+        name (str): The client's name.
+        phone_number (str): The client's phone number.
+        room_number (str): The client's room number.
+        special_requests (str): Special requests made by the client.
 
-    def update_client(self, client_id: int, name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
-        """
-        Update an existing client in the API.
+    Returns:
+        ClientDetail: A Pydantic model containing the created client details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "clients"
 
-        Args:
-            client_id (int): The unique identifier of the client.
-            name (str): The client's name.
-            phone_number (str): The client's phone number.
-            room_number (str): The client's room number.
-            special_requests (str): Special requests made by the client.
+        result = api_client.post(f"{endpoint}/", json=
+        {
+            "name": name,
+            "phone_number": phone_number,
+            "room_number": room_number,
+            "special_requests": special_requests
+        })
+        return ClientDetail(**result)
+    except Exception as e:
+        print(f"Error: {e}")
 
-        Returns:
-            ClientDetail: A Pydantic model containing the updated client details.
-        """
-        try:
-            result = self.api_client.put(f"{self.endpoint}/{client_id}/", json={
-                "name": name,
-                "phone_number": phone_number,
-                "room_number": room_number,
-                "special_requests": special_requests
-            })
-            return ClientDetail(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+@tool
+def update_client(client_id: int, name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
+    """
+    Update an existing client.
+    Get the client ID for update it.
+    If client want to change his room number, just increment it or search in special request if he notified a special room.
 
-    def delete_client(self, client_id: int) -> None:
-        """
-        Delete a client by ID from the API.
+    Args:
+        client_id (int): The unique identifier of the client.
+        name (str): The client's name.
+        phone_number (str): The client's phone number.
+        room_number (str): The client's room number.
+        special_requests (str): Special requests made by the client.
 
-        Args:
-            client_id (int): The unique identifier of the client.
+    Returns:
+        ClientDetail: A Pydantic model containing the updated client details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "clients"
 
-        Returns:
-            None
-        """
-        try:
-            self.api_client.delete(f"{self.endpoint}/{client_id}/")
-            print(f"Client with ID {client_id} deleted successfully.")
-        except Exception as e:
-            print(f"Error: {e}")
+        result = api_client.put(f"{endpoint}/{client_id}/", json={
+            "name": name,
+            "phone_number": phone_number,
+            "room_number": room_number,
+            "special_requests": special_requests
+        })
+        return ClientDetail(**result)
+    except Exception as e:
+        print(f"Error: {e}")
+
+@tool
+def delete_client(client_id: int) -> None:
+    """
+    Delete a client by ID.
+    Get the client ID for delete it.
+    Call this method when the client leave the hotel (or gave back the keys).
+
+    Args:
+        client_id (int): The unique identifier of the client.
+
+    Returns:
+        None
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "clients"
+
+        api_client.delete(f"{endpoint}/{client_id}/")
+        print(f"Client with ID {client_id} deleted successfully.")
+    except Exception as e:
+        print(f"Error: {e}")

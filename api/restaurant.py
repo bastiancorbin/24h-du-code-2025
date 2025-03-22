@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class RestaurantDetail(BaseModel):
     id: int = Field(description="The restaurant's unique identifier")
@@ -16,23 +18,22 @@ class Restaurant(BaseModel):
     previous: str | None = Field(description="The URL to the previous page")
     results: list[RestaurantDetail] = Field(description="The list of restaurants")
 
-class RestaurantApi:
-    def __init__(self):
-        self.api_client = ApiClient()
-        self.endpoint = "restaurants"
+@tool
+def get_restaurants(page_number: int = 1) -> Restaurant:
+    """
+    Get all restaurants.
 
-    def get_restaurants(self, page_number: int = 1) -> Restaurant:
-        """
-        Get all restaurants from the API.
+    Args:
+        page_number (int): The page number for pagination.
 
-        Args:
-            page_number (int): The page number for pagination.
+    Returns:
+        Restaurant: A Pydantic model containing restaurant details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "restaurants"
 
-        Returns:
-            Restaurant: A Pydantic model containing restaurant details.
-        """
-        try:
-            result = self.api_client.get(self.endpoint, params={"page": page_number})
-            return Restaurant(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+        result = api_client.get(endpoint, params={"page": page_number})
+        return Restaurant(**result)
+    except Exception as e:
+        print(f"Error: {e}")
