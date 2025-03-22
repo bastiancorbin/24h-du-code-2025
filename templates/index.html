@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Bienvenue sur mon site Flask !</h1>
+    <p>Ceci est la page d'accueil.</p>
+    <button id="call-receptionist">Appeler Receptionist</button>
+    <p id="response"></p>
+
+    <script>
+        document.getElementById('call-receptionist').addEventListener('click', function() {
+            fetch('{{ url_for('chat_with_receptionist') }}')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('response').innerText = data;
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
