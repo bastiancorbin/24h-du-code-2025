@@ -11,7 +11,7 @@ document.body.appendChild(renderer.domElement);
 
 // Charger l'image de fond (remplace 'background.jpg' par le nom de ton image)
 const textureLoader = new THREE.TextureLoader();
-const backgroundTexture = textureLoader.load('background.png'); // ou 'background.png'
+const backgroundTexture = textureLoader.load('../../imgs/background.jpg');
 scene.background = backgroundTexture;
 
 // Ajout des lumières
@@ -32,7 +32,7 @@ let animationIndex = 0;
 loader.load('assets/character.glb', (gltf) => {
     model = gltf.scene;
     model.scale.set(2, 2, 2);
-    model.position.set(0, -1, 0);
+    model.position.set(0, -2, 0);
     scene.add(model);
 
     console.log('Modèle chargé avec succès');

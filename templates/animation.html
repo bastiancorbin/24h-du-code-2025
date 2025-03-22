@@ -5,11 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animation 3D avec Three.js</title>
     <style>
-        body { margin: 0; overflow: hidden; }
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            background-image: url({{ url_for('static', filename='imgs/background.png') }}); 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-size: cover; 
+            background-attachment: fixed;
+        }
         canvas { display: block; }
     </style>
 </head>
 <body>
+  <p>Bienvenue sur la page d'animation 3D!</p>
+  <img style="position:fixed; left: 48%; transform: translateX(-50%); bottom: -44px;" src="{{ url_for('static', filename='imgs/bar.png') }}">
 <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script type="importmap">
     {
