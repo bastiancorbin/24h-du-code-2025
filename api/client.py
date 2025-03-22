@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class ClientDetail(BaseModel):
     id: int = Field(description="The client's unique identifier")
@@ -19,6 +21,7 @@ class ClientApi:
         self.api_client = ApiClient()
         self.endpoint = "clients"
 
+    @tool
     def get_clients(self, page_number, search) -> Client:
         """
         Get all clients from the API.
@@ -32,6 +35,7 @@ class ClientApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def get_client_by_id(self, client_id: int) -> ClientDetail:
         """
         Get a client by ID from the API.
@@ -48,9 +52,11 @@ class ClientApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def create_client(self, name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
         """
         Create a new client in the API.
+        If the client don't give all informations, ask him to give it.
 
         Args:
             name (str): The client's name.
@@ -73,6 +79,7 @@ class ClientApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def update_client(self, client_id: int, name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
         """
         Update an existing client in the API.
@@ -98,6 +105,7 @@ class ClientApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def delete_client(self, client_id: int) -> None:
         """
         Delete a client by ID from the API.

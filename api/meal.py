@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class MealDetail(BaseModel):
     id: int = Field(description="The meal's unique identifier")
@@ -16,6 +18,7 @@ class MealApi:
         self.api_client = ApiClient()
         self.endpoint = "meals"
 
+    @tool
     def get_meals(self) -> Meal:
         """
         Get all meals from the API.

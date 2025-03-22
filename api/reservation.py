@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class ReservationDetail(BaseModel):
     id: int = Field(description="The reservation's unique identifier")
@@ -50,6 +52,7 @@ class ReservationApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def get_reservation_by_id(self, reservation_id: int) -> ReservationDetail:
         """
         Get a reservation by ID from the API.
@@ -66,6 +69,7 @@ class ReservationApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def create_reservation(self, client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
         """
         Create a new reservation in the API.
@@ -94,6 +98,7 @@ class ReservationApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def update_reservation(self, reservation_id: int, client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
         """
         Update an existing reservation in the API.
@@ -123,6 +128,7 @@ class ReservationApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def update_reservation_with_patch(self, reservation_id: int, client: int = None, restaurant: int = None, date: str = None, meal: int = None, number_of_guests: int = None, special_requests: str = None) -> ReservationDetail:
         """
         Partially update an existing reservation using PATCH in the API.
@@ -153,6 +159,7 @@ class ReservationApi:
         except Exception as e:
             print(f"Error: {e}")
 
+    @tool
     def delete_reservation(self, reservation_id: int) -> None:
         """
         Delete a reservation by ID from the API.

@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
+
+from langchain_core.tools import tool
 
 class RestaurantDetail(BaseModel):
     id: int = Field(description="The restaurant's unique identifier")
@@ -21,6 +23,7 @@ class RestaurantApi:
         self.api_client = ApiClient()
         self.endpoint = "restaurants"
 
+    @tool
     def get_restaurants(self, page_number: int = 1) -> Restaurant:
         """
         Get all restaurants from the API.

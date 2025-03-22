@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
-from api_client import ApiClient
+from api.api_client import ApiClient
 from typing import List
+
+from langchain_core.tools import tool
 
 class Spa(BaseModel):
     id: int = Field(description="The spa's unique identifier")
@@ -18,6 +20,7 @@ class SpaApi:
         self.api_client = ApiClient()
         self.endpoint = "spas"
 
+    @tool
     def get_spas(self) -> List[Spa]:
         """
         Fetches all spa details from the API.
