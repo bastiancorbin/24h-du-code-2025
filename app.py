@@ -9,8 +9,7 @@ def index():
 
 @app.route('/receptionist', methods=['GET'])
 def chat_with_receptionist():
-    print(request.args)
-    return ""
+    return send_request(request.args.get('message'))
 
 if __name__ == '__main__':
     app.run(debug=True)

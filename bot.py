@@ -9,7 +9,7 @@ from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_core.tools import tool, ToolException
 from langchain_core.messages import HumanMessage
 
-from api.client import ClientApi
+from api.client import get_clients, get_client_by_id, create_client, update_client, delete_client
 from api.meal import MealApi
 from api.reservation import ReservationApi
 from api.restaurant import RestaurantApi
@@ -25,7 +25,6 @@ model = init_chat_model("mistral-large-latest", model_provider="mistralai")
 
 # Tools
 
-client = ClientApi()
 meal = MealApi()
 reservation = ReservationApi()
 restaurant = RestaurantApi()
@@ -35,11 +34,11 @@ search = TavilySearchResults(max_results=2)
 tools = [
     search,
 
-    client.create_client,
-    client.get_clients,
-    client.delete_client,
-    client.get_client_by_id,
-    client.update_client,
+    create_client,
+    get_clients,
+    delete_client,
+    get_client_by_id,
+    update_client,
 
     meal.get_meals,
 
@@ -59,7 +58,7 @@ tools = [
 memory = MemorySaver()
 config =  {
     "configurable": {
-        "thread_id": "abc123"
+        "thread_id": "abb123"
     }
 }
 
