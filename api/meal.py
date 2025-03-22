@@ -16,7 +16,7 @@ class Meal(BaseModel):
 @tool
 def get_meals() -> Meal:
     """
-    Get all meals from the API.
+    Get all meals.
 
     Returns:
         Meal: A Pydantic model containing meal details.

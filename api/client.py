@@ -55,9 +55,9 @@ def get_client_by_id(client_id: int) -> ClientDetail:
         print(f"Error: {e}")
 
 @tool
-def create_client(name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
+def create_client(name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
     """
-    Create a new client in the API.
+    Create a new client .
     If the client don't give all informations, ask him to give it.
 
     Args:
@@ -85,9 +85,11 @@ def create_client(name: str, phone_number: str, room_number: str, special_reques
         print(f"Error: {e}")
 
 @tool
-def update_client(client_id: int, name: str, phone_number: str, room_number: str, special_requests: str) -> ClientDetail:
+def update_client(client_id: int, name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
     """
-    Update an existing client in the API.
+    Update an existing client.
+    Get the client ID for update it.
+    If client want to change his room number, just increment it or search in special request if he notified a special room.
 
     Args:
         client_id (int): The unique identifier of the client.
@@ -116,7 +118,9 @@ def update_client(client_id: int, name: str, phone_number: str, room_number: str
 @tool
 def delete_client(client_id: int) -> None:
     """
-    Delete a client by ID from the API.
+    Delete a client by ID.
+    Get the client ID for delete it.
+    Call this method when the client leave the hotel (or gave back the keys).
 
     Args:
         client_id (int): The unique identifier of the client.

@@ -20,7 +20,7 @@ class Reservation(BaseModel):
 
 def get_reservations(page_number=None, client_id=None, date_from=None, date_to=None, meal=None, restaurant=None) -> Reservation:
     """
-    Get all reservations from the API.
+    Get all reservations .
 
     Args:
         page_number (int, optional): The page number for pagination.
@@ -53,7 +53,7 @@ def get_reservations(page_number=None, client_id=None, date_from=None, date_to=N
 @tool
 def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
     """
-    Get a reservation by ID from the API.
+    Get a reservation by ID .
 
     Args:
         reservation_id (int): The unique identifier of the reservation.
@@ -71,9 +71,10 @@ def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
         print(f"Error: {e}")
 
 @tool
-def create_reservation(client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
+def create_reservation(client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str="") -> ReservationDetail:
     """
-    Create a new reservation in the API.
+    Create a new reservation.
+    Before that you need to get the client ID and restaurant ID and meal ID and check if the client already have a reservation in the same date and restaurant for the meal.
 
     Args:
         client (int): The ID of the client making the reservation.
@@ -81,7 +82,7 @@ def create_reservation(client: int, restaurant: int, date: str, meal: int, numbe
         date (str): The date of the reservation (YYYY-MM-DD).
         meal (int): The ID of the meal type.
         number_of_guests (int): The number of guests for the reservation.
-        special_requests (str, optional): Special requests for the reservation.
+        special_requests (str): Special requests for the reservation.
 
     Returns:
         ReservationDetail: A Pydantic model containing the created reservation details.
@@ -105,7 +106,8 @@ def create_reservation(client: int, restaurant: int, date: str, meal: int, numbe
 @tool
 def update_reservation(reservation_id: int, client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
     """
-    Update an existing reservation in the API.
+    Update an existing reservation.
+    You need to get the reservation ID and for this you need to get the client ID and restaurant ID and meal ID and the date.S
 
     Args:
         reservation_id (int): The unique identifier of the reservation.
@@ -138,7 +140,7 @@ def update_reservation(reservation_id: int, client: int, restaurant: int, date: 
 @tool
 def update_reservation_with_patch(reservation_id: int, client: int = None, restaurant: int = None, date: str = None, meal: int = None, number_of_guests: int = None, special_requests: str = None) -> ReservationDetail:
     """
-    Partially update an existing reservation using PATCH in the API.
+    Partially update an existing reservation using PATCH .
 
     Args:
         reservation_id (int): The unique identifier of the reservation.
@@ -172,7 +174,7 @@ def update_reservation_with_patch(reservation_id: int, client: int = None, resta
 @tool
 def delete_reservation(reservation_id: int) -> None:
     """
-    Delete a reservation by ID from the API.
+    Delete a reservation by ID .
 
     Args:
         reservation_id (int): The unique identifier of the reservation.

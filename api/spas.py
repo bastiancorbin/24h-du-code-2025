@@ -19,7 +19,7 @@ class Spa(BaseModel):
 @tool
 def get_spas() -> List[Spa]:
     """
-    Fetches all spa details from the API.
+    Get all spa details.
 
     Returns:
         List[Spa]: A list of Pydantic model instances containing the details of spas.

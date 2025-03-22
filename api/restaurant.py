@@ -21,7 +21,7 @@ class Restaurant(BaseModel):
 @tool
 def get_restaurants(page_number: int = 1) -> Restaurant:
     """
-    Get all restaurants from the API.
+    Get all restaurants.
 
     Args:
         page_number (int): The page number for pagination.
