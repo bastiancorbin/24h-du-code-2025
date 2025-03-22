@@ -11,6 +11,11 @@ def index():
 def chat_with_receptionist():
     return send_request(request.args.get('message'))
 
+# New route to serve the Three.js animation
+@app.route('/animation')
+def animation():
+    return render_template('animation.html')
+
 @app.route('/assets/<path:filename>')
 def serve_assets(filename):
     return send_from_directory('assets', filename)
