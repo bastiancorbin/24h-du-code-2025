@@ -25,7 +25,13 @@ scene.add(directionalLight);
 // Gestion du chargement du modèle et animations
 const loader = new GLTFLoader();
 let model, mixer, currentAction;
-const animations = ['assets/scene-talk.glb', 'assets/scene-angry.glb', 'assets/scene-laugh.glb'];
+
+const animations = [
+    'assets/scene-talk.glb',
+    'assets/scene-angry.glb',
+    'assets/scene-laugh.glb'
+];
+
 let animationIndex = 0;
 
 // Charger le modèle principal (character.glb)
