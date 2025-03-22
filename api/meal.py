@@ -13,21 +13,19 @@ class Meal(BaseModel):
     previous: str | None = Field(description="The URL to the previous page")
     results: list[MealDetail] = Field(description="The list of meals")
 
-class MealApi:
-    def __init__(self):
-        self.api_client = ApiClient()
-        self.endpoint = "meals"
+@tool
+def get_meals() -> Meal:
+    """
+    Get all meals from the API.
 
-    @tool
-    def get_meals(self) -> Meal:
-        """
-        Get all meals from the API.
+    Returns:
+        Meal: A Pydantic model containing meal details.
+    """
+    try:
+        api_client = ApiClient()
+        endpoint = "meals"
 
-        Returns:
-            Meal: A Pydantic model containing meal details.
-        """
-        try:
-            result = self.api_client.get(self.endpoint)
-            return Meal(**result)
-        except Exception as e:
-            print(f"Error: {e}")
+        result = api_client.get(endpoint)
+        return Meal(**result)
+    except Exception as e:
+        print(f"Error: {e}")
