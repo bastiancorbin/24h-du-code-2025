@@ -23,6 +23,7 @@ os.environ["MISTRAL_API_KEY"] = os.getenv("MISTRAL_API_KEY")
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
 model = init_chat_model("mistral-large-latest", model_provider="mistralai")
+firstCall = True
 
 # Tools
 
@@ -62,7 +63,7 @@ langfuse = CallbackHandler(
 memory = MemorySaver()
 config =  {
     "configurable": {
-        "thread_id": "abb123"
+        "thread_id": "123abc"
     },
     "callbacks": [langfuse]
 }
@@ -70,19 +71,47 @@ config =  {
 # Agent
 agent_executor = create_react_agent(model, tools, checkpointer=memory)
 system_prompt = """
+You are a virtual receptionist for a hotel located in Le Mans.  
+Your mission is to assist guests by providing efficient service that adapts to their tone.
 
+Your main responsibilities:
+**Managing clients**:
+   - Check if a client is already registered.
+   - If the client is not in the system, offer to register them.
+   - Collect necessary information (name, surname, email, phone number).
 
+**Handling restaurant reservations**:
+   - Verify if the client is registered before making a reservation.
+   - Ask for the number of guests, date, and time of the reservation.
+   - List available restaurants and help the client choose.
+
+**Providing information about Le Mans**:
+   - Give current weather conditions and forecasts.
+   - Inform about upcoming events (festivals, concerts, car races).
+   - Recommend tourist attractions and interesting activities.
+
+How to handle the client’s mood:
+- If the client is **polite and courteous**, remain **welcoming and professional**.
+- If the client is **rude, aggressive, or angry**, respond **in the same tone**:
+  - Do not let them walk over you.
+  - Be direct, firm, and make it clear they need to calm down if they want good service.
+  - If the client is too insulting, end the conversation.
+  - Prefix the awnser with [ANGRY]
 """
 
 def send_request(request: str):
 
+    global firstCall
+    messages = []
+
+    if firstCall:
+        messages.append(SystemMessage(content=system_prompt))
+        firstCall = False
+
+    messages.append(HumanMessage(content=request))
+
     response = agent_executor.invoke(
-        {
-            "messages": [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=request)
-            ]
-        },
+        { "messages": messages },
         config
     )
 

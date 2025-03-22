@@ -15,7 +15,6 @@ class Spa(BaseModel):
     created_at: str = Field(description="The creation timestamp of the spa")
     updated_at: str = Field(description="The last update timestamp of the spa")
 
-
 @tool
 def get_spas() -> List[Spa]:
     """
