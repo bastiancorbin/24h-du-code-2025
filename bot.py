@@ -58,9 +58,9 @@ tools = [
 
 # Config MemorySaver
 langfuse = CallbackHandler(
-  secret_key="sk-lf-f3cf6da2-97e7-401d-bf20-e44b47c34026",
-  public_key="pk-lf-b854d47a-a949-434b-b1b1-9580bbe6df0c",
-  host="http://10.110.10.172:3000"
+  secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+  public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+  host="http://127.0.0.1:3000"
 )
 memory = MemorySaver()
 config =  {
