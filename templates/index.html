@@ -74,24 +74,24 @@
         // gestion de l'appel au réceptionniste
         callReceptionistButton.addEventListener("click", function() {
             answer.innerHTML += getMyElement(message.value);
+            message.value = "";
 
             fetch(`{{ url_for('chat_with_receptionist') }}?message=${message.value}`)
-                .then(response => response.text())
-                .then(data => {
-                    // TODO : son de la synthèse vocale
-                    // speak(data);
+            .then(response => response.text())
+            .then(data => {
+                // TODO : son de la synthèse vocale
+                // speak(data);
 
-                    // answer.innerHTML += getReceptionistElement(data);
+                    answer.innerHTML += getReceptionistElement(data);
                 })
                 .catch(error => console.error('Error:', error));
         });
 
         function getReceptionistElement(data) {
-            return 
-            `
-                <div class="d-flex justify-content-end w-100">
-                    <div class="position-relative d-flex bg-light-gray text-black rounded-4 p-4" style="width: 90%;">
-                        <div class="position-absolute bg-white text-black px-3 py-1 top-0 rounded-pill" style="right: 26px; transform: translateY(-50%);">Hôtelier</div>
+            return `
+                <div class="d-flex justify-content-start w-100">
+                    <div class="position-relative d-flex bg-dark-gray text-white rounded-4 p-4" style="width: 90%;">
+                        <div class="position-absolute bg-white text-black px-3 py-1 top-0 rounded-pill" style="left: 32px; transform: translateY(-50%);">Hôtelier</div>
                         ${data}
                     </div>
                 </div>
@@ -99,11 +99,10 @@
         }
 
         function getMyElement(data) {
-            return 
-            `
-                <div class="d-flex justify-content-start w-100">
-                    <div class="position-relative d-flex bg-dark-gray text-white rounded-4 p-4" style="width: 90%;">
-                        <div class="position-absolute bg-white text-black px-3 py-1 top-0 rounded-pill" style="left: 32px; transform: translateY(-50%);">Vous</div>
+            return `
+                <div class="d-flex justify-content-end w-100">
+                    <div class="position-relative d-flex bg-light-gray text-black rounded-4 p-4" style="width: 90%;">
+                        <div class="position-absolute bg-white text-black px-3 py-1 top-0 rounded-pill" style="right: 26px; transform: translateY(-50%);">Vous</div>
                         ${data}
                     </div>
                 </div>
