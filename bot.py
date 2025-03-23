@@ -16,6 +16,7 @@ from api.meal import get_meals
 from api.reservation import get_reservations, get_reservation_by_id, create_reservation, delete_reservation, update_reservation, update_reservation_with_patch
 from api.restaurant import get_restaurants
 from api.spas import get_spas
+from tts import generate_audio
 import uuid
 
 
@@ -82,10 +83,8 @@ If client isn't authentified, ask him his identity and get info for it or create
 How to handle the client’s mood:
 - If the client is **polite and courteous**, remain **welcoming and professional**.
 - If the client is **rude, aggressive, or angry**, respond **in the same tone**:
-  - Do not let them walk over you.
-  - Be direct, firm, and make it clear they need to calm down if they want good service.
-  - If the client is too insulting, end the conversation.
   - Prefix the awnser with [ANGRY]
+  - Don't process the request and response with an angry message.
 """
 
 def send_request(request: str):
@@ -105,4 +104,12 @@ def send_request(request: str):
     )
 
     print(response["messages"])
-    return response["messages"][-1].content
+    ret = response["messages"][-1].content
+    text_to_audio = ret.replace("*", "")
+    speed = 1
+    if(text_to_audio.startswith("[ANGRY]")):
+        text_to_audio = text_to_audio.replace("[ANGRY]", "").strip()
+        speed = 0.8
+
+    generate_audio('fr', text_to_audio, speed)
+    return ret
