@@ -75,10 +75,10 @@ function loadAnimation(animationPath) {
 }
 
 // Changer d'animation à chaque clic
-window.addEventListener('click', () => {
-    animationIndex = (animationIndex + 1) % animations.length;
-    loadAnimation(animations[animationIndex]);
-});
+// window.addEventListener('click', () => {
+//     animationIndex = (animationIndex + 1) % animations.length;
+//     loadAnimation(animations[animationIndex]);
+// });
 
 // Ajuster la caméra
 camera.position.set(0, 1, 5);

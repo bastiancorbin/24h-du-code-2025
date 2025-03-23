@@ -112,4 +112,4 @@ def send_request(request: str):
         speed = 0.8
 
     generate_audio('fr', text_to_audio, speed)
-    return ret
+    return response["messages"][-1].content
