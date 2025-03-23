@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class RestaurantDetail(BaseModel):
     id: int = Field(description="The restaurant's unique identifier")
@@ -22,6 +22,8 @@ class Restaurant(BaseModel):
 def get_restaurants(page_number: int = 1) -> Restaurant:
     """
     Get all restaurants.
+    A restaurant is open for Breakfast from 7:00 to 10:00, Lunch from 11:00 to 15:00, and Dinner from 16:00 to 23:00.
+    Provide only restaurant open for the meal requested by the client.
 
     Args:
         page_number (int): The page number for pagination.
@@ -37,3 +39,4 @@ def get_restaurants(page_number: int = 1) -> Restaurant:
         return Restaurant(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)

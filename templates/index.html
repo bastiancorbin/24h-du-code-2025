@@ -76,14 +76,6 @@
             callReceptionistButton.click();
         };
 
-        // gestion de la synthèse vocale
-        const synth = window.speechSynthesis;
-
-        const speak = (text) => {
-            const utterance = new SpeechSynthesisUtterance(text);
-            synth.speak(utterance);
-        };
-
         historyButton.addEventListener("click", function() {
             showHistory = !showHistory;
 
@@ -105,20 +97,21 @@
 
         // gestion de l'appel au réceptionniste
         callReceptionistButton.addEventListener("click", function() {
+
+            
+
             messages.push({ user: "1", text: message.value });
 
             if (showHistory) {
                 answer.innerHTML += getMyElement(message.value);
             }
 
+            const msg = message.value;
             message.value = "";
 
-            fetch(`{{ url_for('chat_with_receptionist') }}?message=${message.value}`)
+            fetch(`{{ url_for('chat_with_receptionist') }}?message=${msg}`)
             .then(response => response.text())
             .then(data => {
-                // TODO : son de la synthèse vocale
-                // speak(data);
-
                 messages.push({ user: "2", text: data });
 
                 if (showHistory) {

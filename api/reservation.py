@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class ReservationDetail(BaseModel):
     id: int = Field(description="The reservation's unique identifier")
@@ -20,7 +20,8 @@ class Reservation(BaseModel):
 
 def get_reservations(page_number=None, client_id=None, date_from=None, date_to=None, meal=None, restaurant=None) -> Reservation:
     """
-    Get all reservations .
+    Get all reservations.
+    You can sum up the number of guests for each reservation to get the total number of guests for a specific date and restaurant.
 
     Args:
         page_number (int, optional): The page number for pagination.
@@ -49,6 +50,7 @@ def get_reservations(page_number=None, client_id=None, date_from=None, date_to=N
         return Reservation(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
@@ -69,12 +71,15 @@ def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def create_reservation(client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str="") -> ReservationDetail:
     """
     Create a new reservation.
-    Before that you need to get the client ID and restaurant ID and meal ID and check if the client already have a reservation in the same date and restaurant for the meal.
+    Before that you need to get the client ID then the meal ID by searching it and the restaurant ID and check if the client already have a reservation in the same date and restaurant for the meal.
+    You need also to check and propose restaurant available for the meal (Breakfast: 7:00-10:00, Launch: 11:00-15:00, Dinner: 16:00-23:00).
+    And ensure the capacity of the restaurant is not exceeded for the date given.
 
     Args:
         client (int): The ID of the client making the reservation.
@@ -102,6 +107,7 @@ def create_reservation(client: int, restaurant: int, date: str, meal: int, numbe
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def update_reservation(reservation_id: int, client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
@@ -136,6 +142,7 @@ def update_reservation(reservation_id: int, client: int, restaurant: int, date: 
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def update_reservation_with_patch(reservation_id: int, client: int = None, restaurant: int = None, date: str = None, meal: int = None, number_of_guests: int = None, special_requests: str = None) -> ReservationDetail:
@@ -170,6 +177,7 @@ def update_reservation_with_patch(reservation_id: int, client: int = None, resta
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def delete_reservation(reservation_id: int) -> None:
@@ -190,3 +198,4 @@ def delete_reservation(reservation_id: int) -> None:
         print(f"Reservation with ID {reservation_id} deleted successfully.")
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)

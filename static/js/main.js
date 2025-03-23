@@ -168,6 +168,35 @@ loader.load('assets/character.glb', (gltf) => {
     console.error('Erreur lors du chargement du modèle :', error);
 });
 
+// Charger et appliquer une animation
+function loadAnimation(animationPath) {
+    loader.load(animationPath, (gltf) => {
+        console.log(`Animation ${animationPath} chargée avec succès`);
+
+        const animation = gltf.animations[0];
+
+        if (animation) {
+            if (currentAction) {
+                currentAction.fadeOut(0.5); // Stop l’animation précédente en fondu
+            }
+
+            const newAction = mixer.clipAction(animation);
+            newAction.reset().fadeIn(0.5).play(); // Joue la nouvelle animation en fondu
+            currentAction = newAction;
+        } else {
+            console.warn(`Aucune animation trouvée dans ${animationPath}`);
+        }
+    }, undefined, (error) => {
+        console.error(`Erreur lors du chargement de l’animation : ${error}`);
+    });
+}
+
+// Changer d'animation à chaque clic
+// window.addEventListener('click', () => {
+//     animationIndex = (animationIndex + 1) % animations.length;
+//     loadAnimation(animations[animationIndex]);
+// });
+
 // Ajuster la caméra
 camera.position.set(0, 1, 5);
 camera.lookAt(0, 1, 0);

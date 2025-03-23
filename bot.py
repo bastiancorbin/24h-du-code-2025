@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Import relevant functionality
 from langchain.chat_models import init_chat_model
@@ -15,6 +16,8 @@ from api.meal import get_meals
 from api.reservation import get_reservations, get_reservation_by_id, create_reservation, delete_reservation, update_reservation, update_reservation_with_patch
 from api.restaurant import get_restaurants
 from api.spas import get_spas
+from tts import generate_audio
+import uuid
 
 
 load_dotenv()
@@ -23,6 +26,7 @@ os.environ["MISTRAL_API_KEY"] = os.getenv("MISTRAL_API_KEY")
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
 model = init_chat_model("mistral-large-latest", model_provider="mistralai")
+firstCall = True
 
 # Tools
 
@@ -55,36 +59,57 @@ tools = [
 
 # Config MemorySaver
 langfuse = CallbackHandler(
-  secret_key="sk-lf-f3cf6da2-97e7-401d-bf20-e44b47c34026",
-  public_key="pk-lf-b854d47a-a949-434b-b1b1-9580bbe6df0c",
-  host="http://10.110.10.172:3000"
+  secret_key=os.getenv("LANGFUSE_SECRET_KEY"),
+  public_key=os.getenv("LANGFUSE_PUBLIC_KEY"),
+  host="http://127.0.0.1:3000"
 )
 memory = MemorySaver()
 config =  {
     "configurable": {
-        "thread_id": "abb123"
+        "thread_id": str(uuid.uuid4())
     },
     "callbacks": [langfuse]
 }
 
 # Agent
 agent_executor = create_react_agent(model, tools, checkpointer=memory)
-system_prompt = """
+system_prompt = f"""
+You are a virtual receptionist for a hotel located in Le Mans.  
+Your mission is to assist guests by providing efficient service that adapts to their tone.
+It is {datetime.now().strftime("%Y-%m-%d")}
 
+If client isn't authentified, ask him his identity and get info for it or create if it doesn't exist.
 
+How to handle the client’s mood:
+- If the client is **polite and courteous**, remain **welcoming and professional**.
+- If the client is **rude, aggressive, or angry**, respond **in the same tone**:
+  - Prefix the awnser with [ANGRY]
+  - Don't process the request and response with an angry message.
 """
 
 def send_request(request: str):
 
+    global firstCall
+    messages = []
+
+    if firstCall:
+        messages.append(SystemMessage(content=system_prompt))
+        firstCall = False
+
+    messages.append(HumanMessage(content=request))
+
     response = agent_executor.invoke(
-        {
-            "messages": [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=request)
-            ]
-        },
+        { "messages": messages },
         config
     )
 
     print(response["messages"])
+    ret = response["messages"][-1].content
+    text_to_audio = ret.replace("*", "")
+    speed = 1
+    if(text_to_audio.startswith("[ANGRY]")):
+        text_to_audio = text_to_audio.replace("[ANGRY]", "").strip()
+        speed = 0.8
+
+    generate_audio('fr', text_to_audio, speed)
     return response["messages"][-1].content
