@@ -1,13 +1,90 @@
+@font-face {
+    src: url("../font/Inter-Regular.ttf");
+
+    font-family: "Inter";
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 50px;
+    --base-black: #000000;
+    --base-white: #FFFFFF;
+
+    background-size: cover;
+    background-position: center;
+    background-image: url('../imgs/background.png');
 }
-h1 {
-    color: #3498db;
+
+canvas {
+    position: absolute;
+    top: 0;
+    z-index: 2;
 }
-a {
-    color: #2ecc71;
-    text-decoration: none;
-    font-weight: bold;
+
+.bg-black {
+    background-color: var(--base-black) !important;
+}
+
+.bg-white {
+    background-color: var(--base-white) !important;
+}
+
+.bg-light-black {
+    background: rgba(28, 27, 27, 0.96) !important;
+}
+
+.bg-light-gray {
+    background: rgba(196, 196, 196, 0.94);
+}
+
+.bg-dark-gray {
+    background: rgba(90, 90, 90, 0.80);
+}
+
+.border-black {
+    border-color: var(--base-black) !important;
+}
+
+.border-white {
+    border-color: var(--base-white) !important;
+}
+
+.text-black {
+    color: var(--base-black) !important;
+}
+
+.text-white {
+    color: var(--base-white) !important;
+}
+
+.ico {
+    --icon-size: 20px;
+    --icon-color: var(--primary-color-80);
+
+    display: block;
+    width: var(--icon-size);
+    height: var(--icon-size);
+
+    mask-repeat: no-repeat;
+    mask-size: cover;
+    mask-image: var(--icon-url);
+
+    background-color: var(--icon-color);
+}
+
+.ico-arrow-right {
+    --icon-color: var(--base-black);
+    --icon-url: url('../svg/arrow-right.svg');
+}
+
+.ico-microphone-speaking {
+    --icon-color: var(--base-white);
+    --icon-url: url('../svg/microphone-speaking.svg');
+}
+
+.ico-multi-bubble {
+    --icon-color: var(--base-white);
+    --icon-url: url('../svg/multi-bubble.svg');
 }
