@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class ClientDetail(BaseModel):
     id: int = Field(description="The client's unique identifier")
@@ -32,6 +32,7 @@ def get_clients(page_number, search) -> Client:
         return Client(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def get_client_by_id(client_id: int) -> ClientDetail:
@@ -53,6 +54,7 @@ def get_client_by_id(client_id: int) -> ClientDetail:
         return ClientDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def create_client(name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
@@ -84,6 +86,7 @@ def create_client(name: str, phone_number: str, room_number: str, special_reques
         return ClientDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def update_client(client_id: int, name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
@@ -115,6 +118,7 @@ def update_client(client_id: int, name: str, phone_number: str, room_number: str
         return ClientDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def delete_client(client_id: int) -> None:
@@ -137,3 +141,4 @@ def delete_client(client_id: int) -> None:
         print(f"Client with ID {client_id} deleted successfully.")
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)

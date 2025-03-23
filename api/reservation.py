@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class ReservationDetail(BaseModel):
     id: int = Field(description="The reservation's unique identifier")
@@ -50,6 +50,7 @@ def get_reservations(page_number=None, client_id=None, date_from=None, date_to=N
         return Reservation(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
@@ -70,6 +71,7 @@ def get_reservation_by_id(reservation_id: int) -> ReservationDetail:
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def create_reservation(client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str="") -> ReservationDetail:
@@ -105,6 +107,7 @@ def create_reservation(client: int, restaurant: int, date: str, meal: int, numbe
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def update_reservation(reservation_id: int, client: int, restaurant: int, date: str, meal: int, number_of_guests: int, special_requests: str | None) -> ReservationDetail:
@@ -139,6 +142,7 @@ def update_reservation(reservation_id: int, client: int, restaurant: int, date: 
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def update_reservation_with_patch(reservation_id: int, client: int = None, restaurant: int = None, date: str = None, meal: int = None, number_of_guests: int = None, special_requests: str = None) -> ReservationDetail:
@@ -173,6 +177,7 @@ def update_reservation_with_patch(reservation_id: int, client: int = None, resta
         return ReservationDetail(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)
 
 @tool
 def delete_reservation(reservation_id: int) -> None:
@@ -193,3 +198,4 @@ def delete_reservation(reservation_id: int) -> None:
         print(f"Reservation with ID {reservation_id} deleted successfully.")
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)

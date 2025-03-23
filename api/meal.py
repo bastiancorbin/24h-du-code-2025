@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class MealDetail(BaseModel):
     id: int = Field(description="The meal's unique identifier")
@@ -29,3 +29,4 @@ def get_meals() -> Meal:
         return Meal(**result)
     except Exception as e:
         print(f"Error: {e}")
+        raise ToolException(e)

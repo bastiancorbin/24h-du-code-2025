@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from api.api_client import ApiClient
 from typing import List
 
-from langchain_core.tools import tool
+from langchain_core.tools import tool, ToolException
 
 class Spa(BaseModel):
     id: int = Field(description="The spa's unique identifier")
@@ -31,4 +31,4 @@ def get_spas() -> List[Spa]:
         return [Spa(**spa) for spa in result]  # Convert each item in the list to a Spa instance
     except Exception as e:
         print(f"Error: {e}")
-        return []
+        raise ToolException(e)
