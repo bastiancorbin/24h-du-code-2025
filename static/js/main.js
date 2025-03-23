@@ -26,12 +26,129 @@ scene.add(directionalLight);
 const loader = new GLTFLoader();
 let model, mixer, currentAction;
 
-const animations = [
+const animationsTalk = [
     'assets/scene-talk.glb',
-    'assets/scene-angry.glb',
-    'assets/scene-laugh.glb'
 ];
-let animationIndex = 0;
+
+const animationsLaugh = [
+    'assets/scene-laugh.glb',
+];
+
+const animationsAngry = [
+    'assets/scene-angry.glb',
+];
+
+const animationsTask = [
+    'assets/scene-sit-down.glb',
+    'assets/scene-sit-to-type.glb',
+    'assets/scene-typing.glb',
+];
+
+const animationsStopTask = [
+    'assets/scene-stop-type.glb',
+    'assets/scene-sit-up.glb',
+];
+
+var newAction;
+
+// Charger et appliquer une animation
+async function loadAnimation(animationPath) {
+    return new Promise((resolve, reject) => {
+        loader.load(animationPath, (gltf) => {
+            console.log(`Animation ${animationPath} chargée avec succès`);
+
+            const animation = gltf.animations[0];
+
+            if (animation) {
+                if (currentAction) {
+                    currentAction.fadeOut(0.5);
+                }
+
+                newAction = mixer.clipAction(animation);
+                newAction.reset().fadeIn(0.5).play();
+
+                currentAction = newAction;
+
+                newAction.clampWhenFinished = true;
+                newAction.loop = THREE.LoopOnce;
+                newAction.getMixer().addEventListener('finished', () => {
+                    resolve();
+                });
+            } else {
+                console.warn(`Aucune animation trouvée dans ${animationPath}`);
+                resolve();
+            }
+        }, undefined, (error) => {
+            console.error(`Erreur lors du chargement de l’animation : ${error}`);
+            reject(error);
+        });
+    });
+}
+
+// Fonction pour jouer toutes les animations enchaînées
+async function playChainedAnimationsTest(index = 0) {
+    if (index < animationsTask.length) {
+        await loadAnimation(animationsTask[index]);
+        await playChainedAnimationsTest(index + 1);
+    } else {
+        await loadAnimation(animationsTask[2]);
+    }
+}
+
+async function playChainedAnimationsTest2(index2 = 0) {
+    if (index2 < animationsStopTask.length - 1) {
+        await loadAnimation(animationsStopTask[index2]);
+        await playChainedAnimationsTest2(index2 + 1);
+    } else {
+        await loadAnimation(animationsTalk[0]);
+    }
+}
+
+// Changer d'animation à chaque clic
+async function test1() {
+    await loadAnimation(animationsTalk[0]);
+}
+
+async function test2() {
+    await loadAnimation(animationsLaugh[0]);
+}
+
+async function test3() {
+    await loadAnimation(animationsAngry[0]);
+}
+
+async function test4() {
+    await playChainedAnimationsTest(0);
+}
+
+async function test5() {
+    await playChainedAnimationsTest2(0);
+}
+
+async function changeAnimation(task) {
+    switch (task) {
+        case 'talk':
+            await test1();
+            break;
+        case 'laugh':
+            await test2();
+            break;
+        case 'angry':
+            await test3();
+            break;
+        case 'task':
+            await test4();
+            break;
+        case 'stop-task':
+            await test5();
+            break;
+        default:
+            console.log('Task not found');
+    }
+}
+
+// Attach the changeAnimation function to the window object
+window.changeAnimation = changeAnimation;
 
 // Charger le modèle principal (character.glb)
 loader.load('assets/character.glb', (gltf) => {
@@ -46,7 +163,7 @@ loader.load('assets/character.glb', (gltf) => {
     mixer = new THREE.AnimationMixer(model);
 
     // Charger la première animation
-    loadAnimation(animations[animationIndex]);
+    changeAnimation('talk');
 }, undefined, (error) => {
     console.error('Erreur lors du chargement du modèle :', error);
 });
