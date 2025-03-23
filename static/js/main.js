@@ -37,7 +37,7 @@ let animationIndex = 0;
 loader.load('assets/character.glb', (gltf) => {
     model = gltf.scene;
     model.scale.set(2, 2, 2);
-    model.position.set(0, -2, 0);
+    model.position.set(-0.1, -2.3, 0);
     scene.add(model);
 
     console.log('Modèle chargé avec succès');

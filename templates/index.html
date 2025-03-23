@@ -14,12 +14,14 @@
 
 <body>
 
-    <!-- <img style="position:fixed; left: 48%; transform: translateX(-50%); bottom: -44px;" src="{{ url_for('static', filename='imgs/bar.png') }}"> -->
+    <div class="position-absolute w-100 h-100 bottom-0 z-3" style="left: -16px; top:-6px; background-size: cover; background-position: center; background-image: url('{{ url_for('static', filename='imgs/bar.png') }}');"></div>
 
-    <div class="d-flex flex-column justify-content-center align-items-center vh-100 vw-100 position-relative z-3">
-        <div class="d-flex flex-column flex-grow-1 justify-content-end overflow-auto px-2 py-3 gap-4" id="answer" style="width: 600px; min-height: calc(100% - 200px);"></div>
 
-        <div class="d-flex flex-column align-items-center justify-content-start gap-3" style="width: 400px; height: 200px;">
+
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100 vw-100 overflow-hidden position-relative z-3">
+        <div class="d-flex flex-column flex-grow-1 justify-content-end overflow-y-auto px-2 py-3 gap-4" id="answer" style="min-width: 400px; width: 600px; height: calc(100% - 200px); min-height: calc(100% - 200px);"></div>
+
+        <div class="d-flex flex-column align-items-center justify-content-start p-3 gap-3" style="min-width: 250px; width: 400px; height: 200px;">
             <textarea class="form-control rounded-2 p-3" id="message" placeholder="Entrez votre message"></textarea>
 
             <div class="d-flex align-items-center justify-content-between w-100">

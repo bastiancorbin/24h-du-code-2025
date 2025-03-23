@@ -12,11 +12,15 @@ body {
     --base-black: #000000;
     --base-white: #FFFFFF;
 
-    background: url('../imgs/background.png') lightgray 50% / cover no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-image: url('../imgs/background.png');
 }
 
 canvas {
-    display: block;
+    position: absolute;
+    top: 0;
+    z-index: 2;
 }
 
 .bg-black {
