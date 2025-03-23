@@ -27,12 +27,28 @@ canvas {
     background-color: var(--base-white) !important;
 }
 
+.bg-light-gray {
+    background: rgba(196, 196, 196, 0.94);
+}
+
+.bg-dark-gray {
+    background: rgba(90, 90, 90, 0.80);
+}
+
 .border-black {
     border-color: var(--base-black) !important;
 }
 
 .border-white {
     border-color: var(--base-white) !important;
+}
+
+.text-black {
+    color: var(--base-black) !important;
+}
+
+.text-white {
+    color: var(--base-white) !important;
 }
 
 .ico {
