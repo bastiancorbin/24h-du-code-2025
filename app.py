@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request, render_template, send_from_directory
 from bot import send_request
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 @app.route('/')
 def index():
