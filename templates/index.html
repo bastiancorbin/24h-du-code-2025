@@ -17,7 +17,7 @@
     <!-- <img style="position:fixed; left: 48%; transform: translateX(-50%); bottom: -44px;" src="{{ url_for('static', filename='imgs/bar.png') }}"> -->
 
     <div class="d-flex flex-column justify-content-center align-items-center vh-100 vw-100 position-relative z-3">
-        <div class="d-flex flex-column flex-grow-1 justify-content-end px-2 py-3 gap-4" id="answer" style="width: 600px;"></div>
+        <div class="d-flex flex-column flex-grow-1 justify-content-end overflow-auto px-2 py-3 gap-4" id="answer" style="width: 600px; min-height: calc(100% - 200px);"></div>
 
         <div class="d-flex flex-column align-items-center justify-content-start gap-3" style="width: 400px; height: 200px;">
             <textarea class="form-control rounded-2 p-3" id="message" placeholder="Entrez votre message"></textarea>
@@ -62,7 +62,7 @@
     
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
-            message.innerHTML = transcript;
+            message.value = transcript;
 
             callReceptionistButton.click();
         };
@@ -80,6 +80,7 @@
 
             if (showHistory) {
                 answer.innerHTML = "";
+
                 messages.forEach(message => {
                     if (message.user === "1") {
                         answer.innerHTML += getMyElement(message.text);
@@ -95,8 +96,12 @@
 
         // gestion de l'appel au réceptionniste
         callReceptionistButton.addEventListener("click", function() {
-            // answer.innerHTML += getMyElement(message.value);
             messages.push({ user: "1", text: message.value });
+
+            if (showHistory) {
+                answer.innerHTML += getMyElement(message.value);
+            }
+
             message.value = "";
 
             fetch(`{{ url_for('chat_with_receptionist') }}?message=${message.value}`)
@@ -106,7 +111,13 @@
                 // speak(data);
 
                 messages.push({ user: "2", text: data });
-                answer.innerHTML = getLastMessageElement(data);
+
+                if (showHistory) {
+                    answer.innerHTML += getReceptionistElement(data);
+                } else {
+                    answer.innerHTML = "";
+                    answer.innerHTML = getLastMessageElement(data);
+                }
             })
             .catch(error => console.error('Error:', error));
         });
