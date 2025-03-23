@@ -57,8 +57,9 @@ def get_client_by_id(client_id: int) -> ClientDetail:
 @tool
 def create_client(name: str, phone_number: str, room_number: str, special_requests: str="") -> ClientDetail:
     """
-    Create a new client .
+    Create a new client.
     If the client don't give all informations, ask him to give it.
+    Ensure the room_number is not already taken (available by listing clients).
 
     Args:
         name (str): The client's name.

@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Import relevant functionality
 from langchain.chat_models import init_chat_model
@@ -15,6 +16,7 @@ from api.meal import get_meals
 from api.reservation import get_reservations, get_reservation_by_id, create_reservation, delete_reservation, update_reservation, update_reservation_with_patch
 from api.restaurant import get_restaurants
 from api.spas import get_spas
+import uuid
 
 
 load_dotenv()
@@ -63,32 +65,17 @@ langfuse = CallbackHandler(
 memory = MemorySaver()
 config =  {
     "configurable": {
-        "thread_id": "123abc"
+        "thread_id": str(uuid.uuid4())
     },
     "callbacks": [langfuse]
 }
 
 # Agent
 agent_executor = create_react_agent(model, tools, checkpointer=memory)
-system_prompt = """
+system_prompt = f"""
 You are a virtual receptionist for a hotel located in Le Mans.  
 Your mission is to assist guests by providing efficient service that adapts to their tone.
-
-Your main responsibilities:
-**Managing clients**:
-   - Check if a client is already registered.
-   - If the client is not in the system, offer to register them.
-   - Collect necessary information (name, surname, email, phone number).
-
-**Handling restaurant reservations**:
-   - Verify if the client is registered before making a reservation.
-   - Ask for the number of guests, date, and time of the reservation.
-   - List available restaurants and help the client choose.
-
-**Providing information about Le Mans**:
-   - Give current weather conditions and forecasts.
-   - Inform about upcoming events (festivals, concerts, car races).
-   - Recommend tourist attractions and interesting activities.
+It is {datetime.now().strftime("%Y-%m-%d")}
 
 How to handle the client’s mood:
 - If the client is **polite and courteous**, remain **welcoming and professional**.
