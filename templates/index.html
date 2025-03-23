@@ -13,18 +13,8 @@
 </head>
 
 <body>
-
-    <div class="d-flex justify-content-center gap-3 my-3">
-        <button class="btn btn-primary" onclick="changeAnimation('talk')">Talk</button>
-        <button class="btn btn-primary" onclick="changeAnimation('laugh')">Laugh</button>
-        <button class="btn btn-primary" onclick="changeAnimation('angry')">Angry</button>
-        <button class="btn btn-primary" onclick="changeAnimation('task')">Task</button>
-        <button class="btn btn-primary" onclick="changeAnimation('stop-task')">Stop Task</button>
-    </div>
     
     <div class="position-absolute w-100 h-100 bottom-0 z-3" style="left: -16px; top:-6px; background-size: cover; background-position: center; background-image: url('{{ url_for('static', filename='imgs/bar.png') }}');"></div>
-
-
 
     <div class="d-flex flex-column justify-content-center align-items-center vh-100 vw-100 overflow-hidden position-relative z-3">
         <div class="d-flex flex-column flex-grow-1 justify-content-end overflow-y-auto px-2 py-3 gap-4" id="answer" style="min-width: 400px; width: 600px; height: calc(100% - 200px); min-height: calc(100% - 200px);"></div>
@@ -99,7 +89,7 @@
         // gestion de l'appel au réceptionniste
         callReceptionistButton.addEventListener("click", function() {
 
-            
+            changeAnimation('task');
 
             messages.push({ user: "1", text: message.value });
 
@@ -112,7 +102,18 @@
 
             fetch(`{{ url_for('chat_with_receptionist') }}?message=${msg}`)
             .then(response => response.text())
-            .then(data => {
+            .then(async (data) => {
+
+                changeAnimation('stop-task');
+
+                if(data.startsWith("[ANGRY]")) {
+                    changeAnimation('angry');
+                    data = data.replace("[ANGRY]", "");
+                }
+
+                const audio = new Audio("{{ url_for('static', filename='audio/response.wav') }}");
+                audio.play();
+
                 messages.push({ user: "2", text: data });
 
                 if (showHistory) {
@@ -122,7 +123,10 @@
                     answer.innerHTML = getLastMessageElement(data);
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(async (error) => {
+                console.error('Error:', error);
+                await changeAnimation('stop-task');
+            });
         });
 
         function getLastMessageElement(data) {
